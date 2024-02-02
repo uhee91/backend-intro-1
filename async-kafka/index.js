@@ -3,7 +3,7 @@ const { Kafka } = require('kafkajs');
 
 const app = express();
 const PORT = 3000;
-const KAFKA_BROKER_URL = 'localhost:9092';
+const KAFKA_BROKER_URL = process.env.KAFKA_BROKER_URL;
 const TOPIC_NAME = 'async_tasks';
 
 const kafka = new Kafka({
@@ -27,8 +27,11 @@ app.get('/async-endpoint', async (req, res) => {
 const consumer = kafka.consumer({ groupId: 'test-group' });
 
 async function processMessages() {
+    console.log("===== Connect =====")
     await consumer.connect();
+    console.log("===== subscribe =====")
     await consumer.subscribe({ topic: TOPIC_NAME });
+    console.log("===== run =====")
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
             console.log(`Received message: ${message.value}`);

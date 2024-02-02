@@ -1,11 +1,17 @@
 version: '3'
 
+networks:
+  async-kafka:
+    driver: bridge
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.0
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - async-kafka
 
   kafka:
     image: confluentinc/cp-kafka:6.2.0
@@ -20,6 +26,9 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9092:9092"
+    networks:
+      - async-kafka
+
   async-worker:
     build: .
     depends_on:
@@ -28,3 +37,5 @@ services:
       - "3033:3000"
     environment:
       - KAFKA_BROKER_URL=kafka:9092
+    networks:
+      - async-kafka
