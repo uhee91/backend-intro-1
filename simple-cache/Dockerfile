@@ -2,7 +2,8 @@
 FROM node:14
 
 # Set the working directory in the container to /app
-WORKDIR /app
+#WORKDIR /app
+WORKDIR /usr/src/app
 
 # Copy the package.json and package-lock.json first, to leverage Docker cache
 COPY package*.json ./
@@ -14,4 +15,4 @@ RUN npm install
 COPY . .
 
 # Specify the command to run when the container starts
-CMD ["node", "app.js"]
+CMD ["npm", "start"]
